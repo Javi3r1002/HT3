@@ -1,0 +1,42 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import sklearn.cluster as cluster
+import sklearn.metrics as metrics
+import sklearn.preprocessing
+import scipy.cluster.hierarchy as sch
+import sklearn.mixture as mixture
+import pyclustertend 
+import random
+from sklearn.cluster import KMeans, MeanShift, estimate_bandwidth
+from sklearn.preprocessing import StandardScaler, PowerTransformer
+from sklearn.metrics import silhouette_score
+from sklearn.model_selection import train_test_split
+from kmodes.kprototypes import KPrototypes
+from yellowbrick.cluster import KElbowVisualizer, SilhouetteVisualizer, InterclusterDistance
+from kneed import KneeLocator
+from sklearn import datasets
+from sklearn.tree import DecisionTreeClassifier 
+from sklearn import tree
+from sklearn import metrics
+from sklearn.model_selection import cross_val_predict
+from sklearn.decomposition import PCA
+from sklearn.metrics import confusion_matrix
+from tqdm import tqdm
+from sklearn.datasets import make_blobs
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_samples, silhouette_score
+import matplotlib.cm as cm
+import sys
+import warnings
+import scipy.stats as stats
+import pylab
+from scipy.stats import shapiro
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.datasets import make_classification
+from sklearn.tree import export_graphviz
+
+from mpl_toolkits.mplot3d import Axes3D
