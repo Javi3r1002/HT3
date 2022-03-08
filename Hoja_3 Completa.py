@@ -50,13 +50,34 @@ Test = pd.read_csv('test.csv')
 #print(Data)
 
 normal = Data.select_dtypes(include = np.number)
+CN = normal.columns.values
+normal = normal.dropna()
+r = ''
+
+fig = plt.figure()
+g = 0
+for i in CN:
+    estadistico1, p_value1 = stats.kstest(normal[i], 'norm')
+
+    if p_value1 > 0.5:
+        r = 'Es normal'
+    else:
+        r = 'no es normal'
+
+    plt.subplot(7,7,g+1)
+    sns.distplot(normal[i])
+    plt.xlabel(i)
+    g+= 1
+
+    print(i, ": ", r)
+
+
 
 #print(normal.describe())
 
-normal = normal.drop(['Id', 'LowQualFinSF', 'YearBuilt', 'YearRemodAdd', 'GarageYrBlt', 'GarageArea', 'MoSold', 'YrSold', 'MSSubClass', 'OverallCond', 'BsmtFinSF1','BsmtFinSF2', 'BsmtUnfSF', '2ndFlrSF', 'BsmtFullBath', 'BsmtHalfBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 'WoodDeckSF', 'EnclosedPorch','3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal', 'LotFrontage', 'LotArea', 'MasVnrArea', '1stFlrSF', '2ndFlrSF', 'TotRmsAbvGrd', 'Fireplaces', 'OpenPorchSF' ], axis = 1)
+normal = normal.drop(['Id', 'LowQualFinSF', 'YearBuilt', 'YearRemodAdd', 'GarageYrBlt', 'FullBath', 'MoSold', 'YrSold', 'MSSubClass', 'OverallCond', 'BsmtFinSF1','BsmtFinSF2', 'BsmtUnfSF', '2ndFlrSF', 'BsmtFullBath', 'BsmtHalfBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 'WoodDeckSF', 'EnclosedPorch','3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal', 'LotFrontage', 'LotArea', 'MasVnrArea', '2ndFlrSF', 'TotRmsAbvGrd', 'Fireplaces', 'OpenPorchSF' ], axis = 1)
 
 correlation_mat = normal.corr()
-
 NC = normal.columns.values
 
 SP = correlation_mat.iloc[-1]
@@ -66,11 +87,13 @@ SaleP = normal[['SalePrice']]
 #print(SP)
 
 #variables = correlation_mat.query("sector == 'SalePrice & ")
-#print(correlation_mat)
+#print(correlation_mat.iloc[-1])
 
 
 #sns.heatmap(correlation_mat, annot = True)
-normal = normal.dropna()
+plt.tight_layout()
+plt.show()
+
 CN = normal.columns.values
 
 #print(CN)
@@ -113,8 +136,8 @@ X_scale=sklearn.preprocessing.scale(X)
 pyclustertend.vat(X_scale)
 pyclustertend.vat(X)
 plt.show()
-
-
+"""
+"""
 numeroClusters = range(1,11)
 wcss = []
 for i in numeroClusters:
@@ -127,8 +150,8 @@ plt.xlabel("Número de clusters")
 plt.ylabel("Puntuación")
 plt.title("Gráfico de Codo")
 
-"""
 
+"""
 
 """
 rango_n_clusters = [2, 3, 4, 5]
@@ -202,8 +225,8 @@ for n_clusters in rango_n_clusters:
         fontsize=14,
         fontweight="bold",
     )
-
 """
+
 km = cluster.KMeans(n_clusters=3).fit(X)
 centroides = km.cluster_centers_
 #print(centroides)
@@ -228,7 +251,7 @@ print('mínimo tercer cluster (verde)',min(Cluster_medio))
 plt.scatter(km.cluster_centers_[:,-1],km.cluster_centers_[:,-1], s=300, c="yellow",marker="*", label="Centroides")
 plt.title("Grupo casa")
 plt.xlabel("Precio de venta")
-plt.ylabel("Calidad de la casa")
+plt.ylabel("Precio de venta")
 plt.legend()
 
 
@@ -262,45 +285,41 @@ random.seed(123)
 X_train, X_test,y_train, y_test = train_test_split(X, y,test_size=0.3,train_size=0.7)
 print(y_train)
 """
-arbol = DecisionTreeClassifier(max_depth=4, random_state=42) 
+arbol = DecisionTreeClassifier(max_depth=5, random_state=42) 
 arbol = arbol.fit(X_train, y_train) 
 
 tree.plot_tree(arbol,feature_names= H.columns, class_names=['0','1','2'],filled=True )
 
+y_predf = arbol.predict(X_train)
+
+
 y_pred = arbol.predict(X_test)
-print(y_pred)
+print ("Accuracy entrenamiento:",metrics.accuracy_score(y_train, y_predf))
 print ("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 print ("Precision:", metrics.precision_score(y_test,y_pred,average='weighted') )
 print ("Recall: ", metrics.recall_score(y_test,y_pred,average='weighted'))
 
-print(y_pred)
-print(y_train)
+
+y_pred = arbol.predict(X_test)
+
+print ("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 
 matrix = confusion_matrix(y_test, y_pred)
 
 print(matrix)
 plt.show()
-"""
-"""
+
+
 X = G.iloc[:, :-1].values
 y = G.iloc[:, -1].values
 regressor = DecisionTreeRegressor(random_state = 0)
 regressor.fit(X, y)
 
 #regressor.predict([[6.5]])
-
-print(X)
-
-X_grid = np.arange(min(X), max(X), 0.01)
-X_grid = X_grid.reshape((len(X_grid), 1))
-plt.scatter(X, y, color = 'red')
-plt.plot(X_grid, regressor.predict(X_grid), color = 'blue')
-plt.title('Truth or Bluff (Decision Tree Regression)')
-plt.xlabel('Position level')
-plt.ylabel('Salary')
-plt.show()
 """
-"""
+
+
+
 clf = tree.DecisionTreeRegressor(max_depth=4, random_state=42)
 clf = clf.fit(X_train, y_train)
 tree.plot_tree(clf,feature_names= H.columns, class_names=['0','1','2'],filled=True )
@@ -308,7 +327,10 @@ tree.plot_tree(clf,feature_names= H.columns, class_names=['0','1','2'],filled=Tr
 y_pred = clf.predict(X_test)
 #print(y_pred)
 #print(X_test)
-print ("Correlación:",metrics.r2_score(y_test, y_pred))
+y_predf = clf.predict(X_train)
+print ("MSE del Train:",metrics.mean_squared_error(y_train, y_predf))
+print ("MSE del test:",metrics.mean_squared_error(y_test, y_pred))
+plt.show()
 #print ("Precision:", metrics.precision_score(y_test,y_pred,average='weighted') )
 #print ("Recall: ", metrics.recall_score(y_test,y_pred,average='weighted'))
 
@@ -318,34 +340,44 @@ print ("Correlación:",metrics.r2_score(y_test, y_pred))
 #matrix = confusion_matrix(y_test, y_pred)
 
 #rint(matrix)
+
 """
-"""
-clf = RandomForestClassifier(n_estimators=100, max_depth=4)
+
+clf = RandomForestClassifier(n_estimators=100, max_depth=5)
 clf.fit(X_train, y_train)
 estimator = clf.estimators_[5]
 
-plt.figure()
-_ = tree.plot_tree(clf.estimators_[0], feature_names=X.columns, filled=True)
-plt.show()
-
+y_predf = clf.predict(X_train)
+print ("Accuracy entrenamiento:",metrics.accuracy_score(y_train, y_predf))
 y_pred = clf.predict(X_test)
 #print(y_pred)
 print ("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 print ("Precision:", metrics.precision_score(y_test,y_pred,average='weighted') )
-print ("Recall: ", metrics.recall_score(y_test,y_pred,average='weighted'))"""
+print ("Recall: ", metrics.recall_score(y_test,y_pred,average='weighted'))
 
-clf = RandomForestRegressor(n_estimators=100, max_depth=5)
+matrix = confusion_matrix(y_test, y_pred)
+
+print(matrix)
+
+plt.figure()
+_ = tree.plot_tree(clf.estimators_[0], feature_names=X.columns, filled=True)
+plt.show()
+"""
+
+
+"""
+clf = RandomForestRegressor(n_estimators=100, max_depth=4)
 clf.fit(X_train, y_train)
 estimator = clf.estimators_[5]
 
 plt.figure()
 _ = tree.plot_tree(clf.estimators_[0], feature_names=X.columns, filled=True)
-plt.show()
-
 y_predf = clf.predict(X_train)
 
-print ("MSE:",metrics.mean_squared_error(y_train, y_predf))
+print ("MSE entrenamiento:",metrics.mean_squared_error(y_train, y_predf))
 
 y_pred = clf.predict(X_test)
 
 print ("MSE:",metrics.mean_squared_error(y_test, y_pred))
+plt.show()
+"""
